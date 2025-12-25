@@ -46,8 +46,8 @@ const Admissions = () => {
             <div className="flex items-center gap-4 bg-white rounded-xl px-6 py-4 shadow-md">
               <FileText className="h-8 w-8 text-amber-500" />
               <div>
-                <p className="text-sm text-muted-foreground">Application Deadline</p>
-                <p className="font-serif text-xl font-bold text-foreground">December 31, 2025</p>
+                <p className="text-sm text-muted-foreground">Applications</p>
+                <p className="font-serif text-xl font-bold text-foreground">Always Open</p>
               </div>
             </div>
           </div>
