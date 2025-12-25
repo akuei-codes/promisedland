@@ -1,0 +1,209 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { GraduationCap, LogOut, FileText, MessageSquare, Bell, Users, Trash2, Check, X, Plus } from "lucide-react";
+import { format } from "date-fns";
+
+const AdminDashboard = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [activeTab, setActiveTab] = useState("applications");
+  const [newAnnouncement, setNewAnnouncement] = useState({ title: "", content: "" });
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session) navigate("/admin/login");
+    });
+  }, [navigate]);
+
+  const { data: applications } = useQuery({
+    queryKey: ["admin-applications"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("applications").select("*, programs(name)").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: messages } = useQuery({
+    queryKey: ["admin-messages"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("contact_messages").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const { data: announcements } = useQuery({
+    queryKey: ["admin-announcements"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("announcements").select("*").order("created_at", { ascending: false });
+      if (error) throw error;
+      return data;
+    },
+  });
+
+  const updateApplicationStatus = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "pending" | "approved" | "rejected" }) => {
+      const { error } = await supabase.from("applications").update({ status }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-applications"] });
+      toast({ title: "Status updated" });
+    },
+  });
+
+  const deleteApplication = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("applications").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-applications"] }),
+  });
+
+  const createAnnouncement = useMutation({
+    mutationFn: async (data: { title: string; content: string }) => {
+      const { error } = await supabase.from("announcements").insert([data]);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-announcements"] });
+      setNewAnnouncement({ title: "", content: "" });
+      toast({ title: "Announcement posted" });
+    },
+  });
+
+  const deleteAnnouncement = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("announcements").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-announcements"] }),
+  });
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/admin/login");
+  };
+
+  const tabs = [
+    { id: "applications", label: "Applications", icon: FileText, count: applications?.length },
+    { id: "messages", label: "Messages", icon: MessageSquare, count: messages?.length },
+    { id: "announcements", label: "Announcements", icon: Bell, count: announcements?.length },
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="bg-slate-800 text-amber-50 sticky top-0 z-50">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <GraduationCap className="h-8 w-8 text-amber-400" />
+            <span className="font-serif text-xl font-bold">Admin Dashboard</span>
+          </div>
+          <Button variant="ghost" onClick={handleLogout} className="text-amber-50 hover:text-amber-400">
+            <LogOut className="h-5 w-5 mr-2" /> Logout
+          </Button>
+        </div>
+      </header>
+
+      <div className="container mx-auto px-4 py-8">
+        {/* Tabs */}
+        <div className="flex gap-2 mb-8 overflow-x-auto pb-2">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`flex items-center gap-2 px-4 py-2 rounded-lg font-medium transition-colors ${activeTab === tab.id ? "bg-amber-400 text-slate-900" : "bg-muted text-muted-foreground hover:bg-muted/80"}`}
+            >
+              <tab.icon className="h-5 w-5" />
+              {tab.label}
+              {tab.count !== undefined && <span className="px-2 py-0.5 rounded-full bg-slate-900/20 text-xs">{tab.count}</span>}
+            </button>
+          ))}
+        </div>
+
+        {/* Applications Tab */}
+        {activeTab === "applications" && (
+          <div className="space-y-4">
+            {applications?.map((app: any) => (
+              <div key={app.id} className="bg-card rounded-xl p-6 border border-border">
+                <div className="flex flex-wrap justify-between items-start gap-4">
+                  <div>
+                    <h3 className="font-semibold text-lg text-foreground">{app.full_name}</h3>
+                    <p className="text-sm text-muted-foreground">{app.email} • {app.phone}</p>
+                    <p className="text-sm text-muted-foreground mt-1">Program: <span className="font-medium">{app.programs?.name}</span></p>
+                    <p className="text-xs text-muted-foreground mt-2">Applied: {format(new Date(app.created_at), "MMM d, yyyy")}</p>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${app.status === "approved" ? "bg-green-100 text-green-800" : app.status === "rejected" ? "bg-red-100 text-red-800" : "bg-amber-100 text-amber-800"}`}>
+                      {app.status}
+                    </span>
+                    <Button size="sm" variant="ghost" onClick={() => updateApplicationStatus.mutate({ id: app.id, status: "approved" })}><Check className="h-4 w-4 text-green-600" /></Button>
+                    <Button size="sm" variant="ghost" onClick={() => updateApplicationStatus.mutate({ id: app.id, status: "rejected" })}><X className="h-4 w-4 text-red-600" /></Button>
+                    <Button size="sm" variant="ghost" onClick={() => deleteApplication.mutate(app.id)}><Trash2 className="h-4 w-4" /></Button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Messages Tab */}
+        {activeTab === "messages" && (
+          <div className="space-y-4">
+            {messages?.map((msg: any) => (
+              <div key={msg.id} className="bg-card rounded-xl p-6 border border-border">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-semibold text-foreground">{msg.subject}</h3>
+                    <p className="text-sm text-muted-foreground">{msg.name} • {msg.email}</p>
+                  </div>
+                  <span className="text-xs text-muted-foreground">{format(new Date(msg.created_at), "MMM d, yyyy")}</span>
+                </div>
+                <p className="mt-4 text-foreground">{msg.message}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Announcements Tab */}
+        {activeTab === "announcements" && (
+          <div className="space-y-6">
+            <div className="bg-card rounded-xl p-6 border border-border">
+              <h3 className="font-semibold text-foreground mb-4">Post New Announcement</h3>
+              <div className="space-y-4">
+                <Input placeholder="Title" value={newAnnouncement.title} onChange={(e) => setNewAnnouncement({ ...newAnnouncement, title: e.target.value })} />
+                <Textarea placeholder="Content" rows={3} value={newAnnouncement.content} onChange={(e) => setNewAnnouncement({ ...newAnnouncement, content: e.target.value })} />
+                <Button variant="gold" onClick={() => createAnnouncement.mutate(newAnnouncement)} disabled={!newAnnouncement.title || !newAnnouncement.content}>
+                  <Plus className="h-4 w-4 mr-2" /> Post Announcement
+                </Button>
+              </div>
+            </div>
+            {announcements?.map((ann: any) => (
+              <div key={ann.id} className="bg-card rounded-xl p-6 border border-border">
+                <div className="flex justify-between items-start">
+                  <div>
+                    <h3 className="font-semibold text-foreground">{ann.title}</h3>
+                    <span className="text-xs text-muted-foreground">{format(new Date(ann.created_at), "MMM d, yyyy")}</span>
+                  </div>
+                  <Button size="sm" variant="ghost" onClick={() => deleteAnnouncement.mutate(ann.id)}><Trash2 className="h-4 w-4" /></Button>
+                </div>
+                <p className="mt-2 text-muted-foreground">{ann.content}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default AdminDashboard;
