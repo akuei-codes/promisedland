@@ -5,10 +5,11 @@ import { Button } from "@/components/ui/button";
 export function HeroSection() {
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden bg-hero-gradient hero-pattern">
-      {/* Decorative Elements */}
+      {/* Animated Decorative Elements */}
       <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-1/4 left-10 w-72 h-72 bg-accent/10 rounded-full blur-3xl animate-float" />
-        <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-accent/5 rounded-full blur-3xl animate-float delay-500" />
+        <div className="absolute top-1/4 left-10 w-72 h-72 bg-accent/12 rounded-full blur-3xl animate-float" />
+        <div className="absolute bottom-1/4 right-10 w-96 h-96 bg-accent/8 rounded-full blur-3xl animate-float delay-500" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-accent/5 rounded-full blur-3xl animate-pulse-slow" />
       </div>
 
       <div className="container mx-auto px-4 pt-32 pb-20 relative z-10">
@@ -77,9 +78,9 @@ export function HeroSection() {
               <div className="absolute top-2 left-2 right-2 bottom-2 bg-cream/5 rounded-3xl border border-cream/10 transform -rotate-2" />
               
               {/* Main Card */}
-              <div className="relative glass-card rounded-3xl p-8 bg-cream/10 backdrop-blur-xl border border-cream/20 animate-scale-in">
+              <div className="relative glass-card rounded-3xl p-8 bg-cream/10 backdrop-blur-xl border border-cream/20 animate-scale-in shadow-glow">
                 <div className="flex items-center gap-4 mb-6">
-                  <div className="p-4 rounded-2xl bg-gold-gradient shadow-gold">
+                  <div className="p-4 rounded-2xl bg-gold-gradient shadow-gold animate-glow">
                     <BookOpen className="h-8 w-8 text-navy-dark" />
                   </div>
                   <div>

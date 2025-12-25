@@ -7,71 +7,71 @@
 @layer base {
   :root {
     /* Primary - Deep Navy Blue (Trust, Academia, Professionalism) */
-    --background: 210 33% 98%;
-    --foreground: 222 47% 11%;
+    --background: 0 0% 100%;
+    --foreground: 222 47% 15%;
 
     --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
+    --card-foreground: 222 47% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
+    --popover-foreground: 222 47% 15%;
 
     /* Navy Blue Primary */
     --primary: 222 47% 20%;
-    --primary-foreground: 45 100% 96%;
+    --primary-foreground: 0 0% 100%;
 
     /* Light Blue Secondary */
-    --secondary: 210 40% 96%;
+    --secondary: 220 30% 96%;
     --secondary-foreground: 222 47% 20%;
 
-    --muted: 210 40% 96%;
-    --muted-foreground: 215 16% 47%;
+    --muted: 220 20% 94%;
+    --muted-foreground: 220 15% 40%;
 
     /* Gold Accent (Promise, Hope, Excellence) */
-    --accent: 43 96% 56%;
+    --accent: 43 96% 50%;
     --accent-foreground: 222 47% 11%;
 
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 214 32% 91%;
-    --input: 214 32% 91%;
+    --border: 220 20% 88%;
+    --input: 220 20% 88%;
     --ring: 222 47% 20%;
 
     --radius: 0.75rem;
 
     /* Custom Colors */
-    --gold: 43 96% 56%;
-    --gold-light: 45 100% 72%;
-    --gold-dark: 40 90% 45%;
-    --navy: 222 47% 20%;
-    --navy-light: 222 35% 35%;
-    --navy-dark: 222 60% 12%;
+    --gold: 43 96% 50%;
+    --gold-light: 45 100% 65%;
+    --gold-dark: 40 90% 40%;
+    --navy: 222 47% 18%;
+    --navy-light: 222 35% 30%;
+    --navy-dark: 222 60% 10%;
     --cream: 45 100% 96%;
     --sage: 150 25% 85%;
 
     /* Gradients */
-    --gradient-hero: linear-gradient(135deg, hsl(222 47% 15%) 0%, hsl(222 47% 25%) 50%, hsl(222 35% 35%) 100%);
-    --gradient-gold: linear-gradient(135deg, hsl(43 96% 56%) 0%, hsl(45 100% 72%) 100%);
-    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(210 40% 98%) 100%);
-    --gradient-subtle: linear-gradient(180deg, hsl(210 33% 98%) 0%, hsl(210 40% 96%) 100%);
+    --gradient-hero: linear-gradient(135deg, hsl(222 50% 12%) 0%, hsl(222 45% 20%) 50%, hsl(222 40% 28%) 100%);
+    --gradient-gold: linear-gradient(135deg, hsl(43 96% 50%) 0%, hsl(45 100% 65%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 30% 98%) 100%);
+    --gradient-subtle: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(220 30% 96%) 100%);
 
     /* Shadows */
-    --shadow-soft: 0 4px 20px -4px hsl(222 47% 20% / 0.1);
-    --shadow-medium: 0 8px 30px -8px hsl(222 47% 20% / 0.15);
-    --shadow-strong: 0 20px 50px -15px hsl(222 47% 20% / 0.25);
-    --shadow-gold: 0 4px 20px -4px hsl(43 96% 56% / 0.4);
-    --shadow-glow: 0 0 40px hsl(43 96% 56% / 0.3);
+    --shadow-soft: 0 4px 20px -4px hsl(222 47% 20% / 0.08);
+    --shadow-medium: 0 8px 30px -8px hsl(222 47% 20% / 0.12);
+    --shadow-strong: 0 20px 50px -15px hsl(222 47% 20% / 0.2);
+    --shadow-gold: 0 4px 20px -4px hsl(43 96% 50% / 0.35);
+    --shadow-glow: 0 0 40px hsl(43 96% 50% / 0.25);
 
     /* Sidebar */
-    --sidebar-background: 222 47% 15%;
+    --sidebar-background: 222 47% 12%;
     --sidebar-foreground: 45 100% 96%;
-    --sidebar-primary: 43 96% 56%;
+    --sidebar-primary: 43 96% 50%;
     --sidebar-primary-foreground: 222 47% 11%;
-    --sidebar-accent: 222 35% 25%;
+    --sidebar-accent: 222 35% 22%;
     --sidebar-accent-foreground: 45 100% 96%;
-    --sidebar-border: 222 35% 25%;
-    --sidebar-ring: 43 96% 56%;
+    --sidebar-border: 222 35% 22%;
+    --sidebar-ring: 43 96% 50%;
   }
 
   .dark {
@@ -172,20 +172,41 @@
     animation: float 6s ease-in-out infinite;
   }
 
+  .animate-bounce-subtle {
+    animation: bounceSubtle 2s ease-in-out infinite;
+  }
+
   .animate-fade-up {
     animation: fadeUp 0.8s ease-out forwards;
+    opacity: 0;
   }
 
   .animate-fade-in {
     animation: fadeIn 0.6s ease-out forwards;
+    opacity: 0;
   }
 
   .animate-scale-in {
     animation: scaleIn 0.5s ease-out forwards;
+    opacity: 0;
   }
 
   .animate-slide-in-right {
     animation: slideInRight 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-slide-in-left {
+    animation: slideInLeft 0.6s ease-out forwards;
+    opacity: 0;
+  }
+
+  .animate-glow {
+    animation: glow 2s ease-in-out infinite alternate;
+  }
+
+  .animate-pulse-slow {
+    animation: pulseSlow 3s ease-in-out infinite;
   }
 
   .delay-100 { animation-delay: 100ms; }
@@ -196,6 +217,7 @@
   .delay-600 { animation-delay: 600ms; }
   .delay-700 { animation-delay: 700ms; }
   .delay-800 { animation-delay: 800ms; }
+  .delay-1000 { animation-delay: 1000ms; }
 
   .glass-card {
     @apply bg-card/80 backdrop-blur-lg border border-border/50;
@@ -203,9 +225,17 @@
 
   .hero-pattern {
     background-image: 
-      radial-gradient(circle at 20% 80%, hsl(43 96% 56% / 0.1) 0%, transparent 50%),
-      radial-gradient(circle at 80% 20%, hsl(43 96% 56% / 0.08) 0%, transparent 40%),
-      radial-gradient(circle at 50% 50%, hsl(222 47% 30% / 0.3) 0%, transparent 60%);
+      radial-gradient(circle at 20% 80%, hsl(43 96% 50% / 0.12) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, hsl(43 96% 50% / 0.1) 0%, transparent 40%),
+      radial-gradient(circle at 50% 50%, hsl(222 45% 25% / 0.4) 0%, transparent 60%);
+  }
+
+  .card-hover {
+    @apply transition-all duration-300 hover:shadow-medium hover:-translate-y-1;
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px hsl(43 96% 50% / 0.5);
   }
 }
 
@@ -256,6 +286,36 @@
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounceSubtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes glow {
+  from {
+    box-shadow: 0 0 20px hsl(43 96% 50% / 0.3);
+  }
+  to {
+    box-shadow: 0 0 35px hsl(43 96% 50% / 0.5);
+  }
+}
+
+@keyframes pulseSlow {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.8; transform: scale(1.02); }
 }
 
 /* Scrollbar styling */

@@ -54,24 +54,24 @@ const Contact = () => {
               <h2 className="font-serif text-2xl font-bold text-foreground mb-6">Get in Touch</h2>
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-amber-100"><MapPin className="h-6 w-6 text-amber-600" /></div>
+                  <div className="p-3 rounded-xl bg-accent/20"><MapPin className="h-6 w-6 text-accent" /></div>
                   <div>
                     <h3 className="font-semibold text-foreground">Location</h3>
                     <p className="text-muted-foreground">Promised Land Guest House, Pop 2 area, before Ranok Hotel, Juba, South Sudan</p>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-amber-100"><Phone className="h-6 w-6 text-amber-600" /></div>
+                  <div className="p-3 rounded-xl bg-accent/20"><Phone className="h-6 w-6 text-accent" /></div>
                   <div>
                     <h3 className="font-semibold text-foreground">Phone</h3>
-                    <p className="text-muted-foreground">+211 XXX XXX XXX</p>
+                    <a href="tel:+211980363156" className="text-muted-foreground hover:text-primary transition-colors">+211 980 363 156</a>
                   </div>
                 </div>
                 <div className="flex items-start gap-4">
-                  <div className="p-3 rounded-xl bg-amber-100"><Mail className="h-6 w-6 text-amber-600" /></div>
+                  <div className="p-3 rounded-xl bg-accent/20"><Mail className="h-6 w-6 text-accent" /></div>
                   <div>
                     <h3 className="font-semibold text-foreground">Email</h3>
-                    <p className="text-muted-foreground">info@promisedlandcollege.edu</p>
+                    <a href="mailto:jokabrahamthon@promisedlandss.org" className="text-muted-foreground hover:text-primary transition-colors">jokabrahamthon@promisedlandss.org</a>
                   </div>
                 </div>
               </div>
