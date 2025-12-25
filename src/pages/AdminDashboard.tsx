@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { GraduationCap, LogOut, FileText, MessageSquare, Bell, Users, Trash2, Check, X, Plus } from "lucide-react";
+import { GraduationCap, LogOut, FileText, MessageSquare, Bell, Trash2, Check, X, Plus, Send, ChevronDown, ChevronUp } from "lucide-react";
 import { format } from "date-fns";
 
 const AdminDashboard = () => {
@@ -15,6 +15,9 @@ const AdminDashboard = () => {
   const queryClient = useQueryClient();
   const [activeTab, setActiveTab] = useState("applications");
   const [newAnnouncement, setNewAnnouncement] = useState({ title: "", content: "" });
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
+  const [expandedMessages, setExpandedMessages] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -88,6 +91,39 @@ const AdminDashboard = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-announcements"] }),
   });
 
+  const replyToMessage = useMutation({
+    mutationFn: async ({ id, reply }: { id: string; reply: string }) => {
+      const { error } = await supabase.from("contact_messages").update({ admin_reply: reply, replied_at: new Date().toISOString() }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["admin-messages"] });
+      setReplyingTo(null);
+      setReplyText("");
+      toast({ title: "Reply sent" });
+    },
+  });
+
+  const deleteMessage = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("contact_messages").delete().eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ["admin-messages"] }),
+  });
+
+  const toggleExpandMessage = (id: string) => {
+    setExpandedMessages(prev => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
   const handleLogout = async () => {
     await supabase.auth.signOut();
     navigate("/admin/login");
@@ -159,16 +195,56 @@ const AdminDashboard = () => {
         {/* Messages Tab */}
         {activeTab === "messages" && (
           <div className="space-y-4">
+            {messages?.length === 0 && <p className="text-muted-foreground text-center py-8">No messages yet.</p>}
             {messages?.map((msg: any) => (
               <div key={msg.id} className="bg-card rounded-xl p-6 border border-border">
                 <div className="flex justify-between items-start">
-                  <div>
-                    <h3 className="font-semibold text-foreground">{msg.subject}</h3>
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-semibold text-foreground">{msg.subject}</h3>
+                      {msg.admin_reply && <span className="px-2 py-0.5 rounded-full bg-green-100 text-green-800 text-xs">Replied</span>}
+                    </div>
                     <p className="text-sm text-muted-foreground">{msg.name} • {msg.email}</p>
                   </div>
-                  <span className="text-xs text-muted-foreground">{format(new Date(msg.created_at), "MMM d, yyyy")}</span>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs text-muted-foreground">{format(new Date(msg.created_at), "MMM d, yyyy")}</span>
+                    <Button size="sm" variant="ghost" onClick={() => toggleExpandMessage(msg.id)}>
+                      {expandedMessages.has(msg.id) ? <ChevronUp className="h-4 w-4" /> : <ChevronDown className="h-4 w-4" />}
+                    </Button>
+                    <Button size="sm" variant="ghost" onClick={() => deleteMessage.mutate(msg.id)}><Trash2 className="h-4 w-4" /></Button>
+                  </div>
                 </div>
                 <p className="mt-4 text-foreground">{msg.message}</p>
+                
+                {expandedMessages.has(msg.id) && (
+                  <div className="mt-4 pt-4 border-t border-border">
+                    {msg.admin_reply ? (
+                      <div className="bg-muted/50 rounded-lg p-4">
+                        <p className="text-xs text-muted-foreground mb-2">Your reply • {msg.replied_at && format(new Date(msg.replied_at), "MMM d, yyyy")}</p>
+                        <p className="text-foreground">{msg.admin_reply}</p>
+                      </div>
+                    ) : replyingTo === msg.id ? (
+                      <div className="space-y-3">
+                        <Textarea 
+                          placeholder="Type your reply..." 
+                          value={replyText} 
+                          onChange={(e) => setReplyText(e.target.value)}
+                          rows={3}
+                        />
+                        <div className="flex gap-2">
+                          <Button size="sm" variant="gold" onClick={() => replyToMessage.mutate({ id: msg.id, reply: replyText })} disabled={!replyText.trim()}>
+                            <Send className="h-4 w-4 mr-2" /> Send Reply
+                          </Button>
+                          <Button size="sm" variant="ghost" onClick={() => { setReplyingTo(null); setReplyText(""); }}>Cancel</Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <Button size="sm" variant="outline" onClick={() => setReplyingTo(msg.id)}>
+                        <Send className="h-4 w-4 mr-2" /> Reply to this message
+                      </Button>
+                    )}
+                  </div>
+                )}
               </div>
             ))}
           </div>

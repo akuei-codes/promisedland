@@ -5,11 +5,11 @@ import { CheckCircle, Calendar, FileText, ArrowRight, GraduationCap } from "luci
 
 const Admissions = () => {
   const requirements = [
-    "Completed secondary school education (or equivalent)",
-    "Basic English proficiency",
-    "Valid national ID or passport",
-    "Commitment to attend classes and complete coursework",
-    "Motivation letter (optional but encouraged)",
+    { text: "Completed secondary school education (or equivalent)", optional: true },
+    { text: "Basic English proficiency", optional: false },
+    { text: "Valid national ID or passport", optional: false },
+    { text: "Commitment to attend classes and complete coursework", optional: false },
+    { text: "Motivation letter", optional: true },
   ];
 
   const steps = [
@@ -65,8 +65,11 @@ const Admissions = () => {
               <ul className="space-y-4">
                 {requirements.map((req, idx) => (
                   <li key={idx} className="flex items-start gap-3">
-                    <CheckCircle className="h-6 w-6 text-green-600 shrink-0" />
-                    <span className="text-foreground">{req}</span>
+                    <CheckCircle className={`h-6 w-6 shrink-0 ${req.optional ? "text-amber-500" : "text-green-600"}`} />
+                    <span className="text-foreground">
+                      {req.text}
+                      {req.optional && <span className="text-muted-foreground text-sm ml-2">(optional)</span>}
+                    </span>
                   </li>
                 ))}
               </ul>

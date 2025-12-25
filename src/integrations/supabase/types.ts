@@ -96,30 +96,36 @@ export type Database = {
       }
       contact_messages: {
         Row: {
+          admin_reply: string | null
           created_at: string
           email: string
           id: string
           is_read: boolean
           message: string
           name: string
+          replied_at: string | null
           subject: string
         }
         Insert: {
+          admin_reply?: string | null
           created_at?: string
           email: string
           id?: string
           is_read?: boolean
           message: string
           name: string
+          replied_at?: string | null
           subject: string
         }
         Update: {
+          admin_reply?: string | null
           created_at?: string
           email?: string
           id?: string
           is_read?: boolean
           message?: string
           name?: string
+          replied_at?: string | null
           subject?: string
         }
         Relationships: []
