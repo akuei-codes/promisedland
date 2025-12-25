@@ -101,11 +101,11 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-accent shrink-0" />
-                <span className="text-cream/70 text-sm">+211 XXX XXX XXX</span>
+                <a href="tel:+211980363156" className="text-cream/70 text-sm hover:text-accent transition-colors">+211 980 363 156</a>
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-accent shrink-0" />
-                <span className="text-cream/70 text-sm">info@promisedlandcollege.edu</span>
+                <a href="mailto:jokabrahamthon@promisedlandss.org" className="text-cream/70 text-sm hover:text-accent transition-colors">jokabrahamthon@promisedlandss.org</a>
               </li>
             </ul>
           </div>
